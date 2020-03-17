@@ -3,6 +3,14 @@
   "name": "Jira Assistant",
   "short_name": "Jira Assist",
   "version": "0.98",
+  "updateURL": "https://raw.githubusercontent.com/shridhar-tl/jira-assistant/master/release/firefox/update_manifest.json",
+  "updateLink": "https://github.com/shridhar-tl/jira-assistant/raw/master/release/firefox/JiraAssist_Latest.xpi",
+  "applications": {
+    "gecko": {
+      "id": "shridhar.tl@gmail.com",
+      "update_url": "https://raw.githubusercontent.com/shridhar-tl/jira-assistant/master/release/firefox/update_manifest.json"
+    }
+  },
   "description": "Help to track & upload work done on a Jira Ticket on timely basis and generate report.",
   "icons": {
     "24": "/assets/icon_24.png",
