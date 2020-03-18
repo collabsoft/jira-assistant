@@ -1,1 +1,1 @@
-npm run build && move_package.bat
+npm run build
