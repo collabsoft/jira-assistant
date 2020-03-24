@@ -74,7 +74,7 @@
     "postcss-safe-parser": "4.0.1",
     "primeflex": "^1.0.0",
     "primeicons": "^2.0.0",
-    "primereact": "^3.4.0",
+    "primereact": "^4.1.2",
     "rc-time-picker": "^3.7.3",
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",
