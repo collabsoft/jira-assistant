@@ -1,55 +1,90 @@
 import React, { PureComponent } from 'react';
-import { ScrollableTable, THead, TRow, Column, TBody, NoDataRow } from '../../components/ScrollableTable';
+import GroupableGrid from '../../components/GroupableGrid/GroupableGrid';
+
+const estimateFieldsToBeHidden = ["-originalestimate", "-totalLogged", "-remainingestimate", "-estVariance"];
 
 class FlatDataGrid extends PureComponent {
-    render() {
-        const { props: { formatDateTime, convertSecs, flatData, pageSettings: { hideEstimate } } } = this;
+    constructor(props) {
+        super(props);
+        this.setPropsInClass(props);
+        this.state = this.getNewState(props);
+        this.state.groupBy = [];
+    }
 
-        return (
-            <ScrollableTable dataset={flatData} exportSheetName="Flat Worklogs">
-                <THead>
-                    <TRow>
-                        <Column sortBy="groupName">Group Name</Column>
-                        <Column sortBy="projectName">Project Name</Column>
-                        <Column sortBy="issueType">Type</Column>
-                        <Column sortBy="epicDisplay">Epic</Column>
-                        <Column sortBy="parent">Parent</Column>
-                        <Column sortBy="ticketNo">Ticket No</Column>
-                        <Column sortBy="statusName">Status</Column>
-                        <Column sortBy="summary">Summary</Column>
-                        <Column sortBy="logTime">Log Date & Time</Column>
-                        <Column sortBy="userDisplay">User</Column>
-                        <Column sortBy="timeSpent">Hr. Spent</Column>
-                        {!hideEstimate && <Column sortBy="originalestimate">Ori. Estm.</Column>}
-                        {!hideEstimate && <Column sortBy="totalLogged">Total Worklogs</Column>}
-                        {!hideEstimate && <Column sortBy="remainingestimate">Rem. Estm.</Column>}
-                        {!hideEstimate && <Column sortBy="estVariance">Estm. Variance</Column>}
-                        <Column sortBy="comment">Comment</Column>
-                    </TRow>
-                </THead>
-                <TBody>
-                    {(row, i) => <tr key={i}>
-                        <td>{row.groupName}</td>
-                        <td>{row.projectName}</td>
-                        <td>{row.issueType}</td>
-                        <td>{row.epicDisplay && <a href={row.epicUrl} className="link" target="_blank" rel="noopener noreferrer">{row.epicDisplay}</a>}</td>
-                        <td>{row.parent && <a href={row.parentUrl} className="link" target="_blank" rel="noopener noreferrer">{row.parent}</a>}</td>
-                        <td><a href={row.ticketUrl} className="link" target="_blank" rel="noopener noreferrer">{row.ticketNo}</a></td>
-                        <td>{row.statusName}</td>
-                        <td>{row.summary}</td>
-                        <td>{formatDateTime(row.logTime)}</td>
-                        <td>{row.userDisplay}</td>
-                        <td>{convertSecs(row.timeSpent)}</td>
-                        {!hideEstimate && <td>{convertSecs(row.originalestimate)}</td>}
-                        {!hideEstimate && <td>{convertSecs(row.totalLogged)}</td>}
-                        {!hideEstimate && <td>{convertSecs(row.remainingestimate)}</td>}
-                        {!hideEstimate && <td>{row.estVariance > 0 ? "+" : null}{convertSecs(row.estVariance)}</td>}
-                        <td>{row.comment}</td>
-                    </tr>}
-                </TBody>
-                <NoDataRow span={11}>No worklog details available</NoDataRow>
-            </ScrollableTable>
-        );
+    UNSAFE_componentWillReceiveProps(props) {
+        this.updateData(props);
+    }
+
+    updateData(props) {
+        if (this.data !== props.flatData || this.pageSettings !== props.pageSettings) {
+            this.setPropsInClass(props);
+            this.setState(this.getNewState(props));
+        }
+    }
+
+    getNewState(props) {
+        return {
+            columns: this.getColumnSettings(props)
+        };
+    }
+
+    setPropsInClass(props) {
+        this.data = props.flatData;
+        this.pageSettings = this.props.pageSettings;
+    }
+
+    getColumnSettings(props) {
+        const { formatDateTime, convertSecs } = props;
+
+        //displayFormat: null, sortValueFun: null, groupValueFunc: null
+        //, allowSorting: true, allowGrouping: true
+
+        return [
+            { field: "groupName", displayText: "Group Name", type: "string" },
+            { field: "projectName", displayText: "Project Name", type: "string" },
+            { field: "issueType", displayText: "Issue Type", type: "string" },
+            { field: "epicDisplay", displayText: "Epic", type: "string", format: (text, row) => this.formatTicket(text, row.epicUrl) },
+            { field: "parent", displayText: "Parent", type: "string", format: (text, row) => this.formatTicket(text, row.parentUrl) },
+            { field: "ticketNo", displayText: "Ticket No", type: "string", format: (text, row) => this.formatTicket(text, row.ticketUrl) },
+            { field: "statusName", displayText: "Status", type: "string" },
+            { field: "summary", displayText: "Summary", type: "string" },
+            { field: "logTime", displayText: "Log Date & Time", type: "datetime", format: formatDateTime },
+            { field: "userDisplay", displayText: "User", type: "string" },
+            { field: "timeSpent", displayText: "Hr. Spent", type: "number", format: convertSecs },
+            { field: "originalestimate", displayText: "Ori. Estm.", type: "number", format: convertSecs },
+            { field: "totalLogged", displayText: "Total Worklogs", type: "number", format: convertSecs },
+            { field: "remainingestimate", displayText: "Rem. Estm.", type: "number", format: convertSecs },
+            { field: "estVariance", displayText: "Estm. Variance", type: "number", format: (value) => (value > 0 ? "+" : "") + convertSecs(value) },
+            { field: "comment", displayText: "Comment" },
+        ];
+    }
+
+    formatTicket(text, url) {
+        return text && <a href={url} className="link" target="_blank" rel="noopener noreferrer">{text}</a>;
+    }
+
+    settingsChanged = (grpconfig, event) => {
+        this.props.onChange(grpconfig, event);
+    }
+
+    render() {
+        const {
+            props: {
+                flatData,
+                pageSettings: {
+                    hideEstimate,
+                    flatTableSettings: {
+                        groupBy, groupFoldable, displayColumns, sortField, isDesc
+                    } = { displayColumns: hideEstimate ? estimateFieldsToBeHidden : null }
+                } = {}
+            },
+            state: { columns } } = this;
+
+        return (<GroupableGrid dataset={flatData} exportSheetName="Flat Worklogs"
+            columns={columns} allowSorting={true} onChange={this.settingsChanged}
+            displayColumns={displayColumns} groupBy={groupBy} groupFoldable={groupFoldable} sortField={sortField} isDesc={isDesc}
+            noRowsMessage="No worklog details available"
+        />);
     }
 }
 
