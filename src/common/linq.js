@@ -54,6 +54,8 @@ Array.prototype.orderBy = function (clause) {
   return tempArray.sort(function (a, b) {
     const x = clause ? clause(a) : a;
     const y = clause ? clause(b) : b;
+    if (!x && y) { return -1; }
+    else if (x && !y) { return 1; }
     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
   });
 };
@@ -65,6 +67,8 @@ Array.prototype.orderByDescending = function (clause) {
   return tempArray.sort(function (a, b) {
     const x = clause ? clause(b) : b;
     const y = clause ? clause(a) : a;
+    if (!x && y) { return -1; }
+    else if (x && !y) { return 1; }
     return ((x < y) ? -1 : ((x > y) ? 1 : 0));
   });
 };
@@ -72,7 +76,7 @@ Array.prototype.orderByDescending = function (clause) {
 Array.prototype.sortBy = function (clause, desc) {
   if (clause && typeof clause === "string") {
     const tmpSort = clause;
-    clause = (b) => b[tmpSort];
+    clause = tmpSort.indexOf('.') > -1 ? (b) => getPathValue(b, tmpSort) : (b) => b[tmpSort];
   }
   return desc ? this.orderByDescending(clause) : this.orderBy(clause);
 };
