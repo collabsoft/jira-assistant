@@ -3,7 +3,7 @@ const path = require('path');
 
 function movePackages(buildPath, printLogs) {
     const deleteFileTypes = /([.]txt|[.]svg)$/;
-    const browsersList = ["chrome", "edge", "firefox", "firefox_selfhost"];
+    const browsersList = ["chrome", "edge", "firefox", "firefox_selfhost", "opera"];
     const excludedFolders = ["source_map"];
 
     const filesOnRoot = fs.readdirSync(buildPath).filter(f => browsersList.indexOf(f.toLowerCase()) === -1 && excludedFolders.indexOf(f.toLowerCase()) === -1);
