@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { AppSidebarToggler } from '@coreui/react';
 import logo from '../../img/logo-symbol.png';
-import { CHROME_WS_URL, FF_STORE_URL, EventCategory, EDGE_STORE_URL, GITHUB_HOME_URL, OPERA_STORE_URL } from '../../_constants';
+import { CHROME_WS_URL, FF_STORE_URL, EventCategory, EDGE_STORE_URL, GITHUB_HOME_URL, OPERA_STORE_URL, AppVersionNo } from '../../_constants';
 
 import './DefaultHeader.scss';
 import { inject } from '../../services/injector-service';
@@ -33,7 +33,7 @@ class DefaultHeader extends PureComponent {
     this.disableJiraUpdates = cUser.disableJiraUpdates;
     this.userId = cUser.userId;
     this.currentJiraInstance = getHostFromUrl(cUser.jiraUrl);
-    this.state = { versionNumber: "1.0" };
+    this.state = { versionNumber: AppVersionNo.toString() };
   }
 
   UNSAFE_componentWillMount() {
@@ -98,7 +98,7 @@ class DefaultHeader extends PureComponent {
         <AppSidebarToggler className="d-lg-none" display="md" mobile><span className="fa fa-bars" /></AppSidebarToggler>
         <a href={this.siteUrl} className="navbar-brand" target="_blank" rel="noopener noreferrer">
           <img src={logo} width="24" height="24" alt="Jira Assistant" className="navbar-brand-minimized" />
-          <span className="navbar-brand-full" onClick={this.showVersionInfo}>Jira Assistant <span className="v-info badge badge-success">v {versionNumber}</span></span>
+          <span className="navbar-brand-full">Jira Assistant <span className="v-info badge badge-success" onClick={this.showVersionInfo}>v {versionNumber}</span></span>
         </a>
         <AppSidebarToggler className="d-md-down-none" display="lg"><span className="fa fa-bars" /></AppSidebarToggler>
         <NavLink to={`/${this.userId}/contribute`} className="btn-donate"

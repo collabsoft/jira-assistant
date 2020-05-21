@@ -37,6 +37,11 @@ export default class AjaxService {
         }
 
         let urlStr = url.toString();
+
+        if (params && Array.isArray(params) && params.length === 1 && typeof params[0] === "object") {
+            params = params[0];
+        }
+
         if (params && Array.isArray(params) && params.length > 0) {
             urlStr = urlStr.format(params);
         }
@@ -86,7 +91,7 @@ export default class AjaxService {
                 data: JSON.stringify(body),
                 success: resolve,
                 error: reject,
-                dataType: "json",
+                dataType: customHeaders?.json !== false ? "json" : undefined,
                 xhrFields: {
                     withCredentials: (customHeaders || {}).withCredentials !== false
                 },
@@ -94,6 +99,7 @@ export default class AjaxService {
                     const { headers } = this.httpOptions;
                     const allHeaders = { ...headers, ...customHeaders };
                     delete allHeaders.withCredentials;
+                    delete allHeaders.json;
 
                     Object.keys(allHeaders).forEach(h => request.setRequestHeader(h, allHeaders[h]));
                 }
