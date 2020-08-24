@@ -58,6 +58,7 @@ class Calendar extends BaseGadget {
 
         this.contextMenuItems = [
             { label: "Edit worklog", icon: "fa fa-edit", command: () => this.showWorklogPopup(this.currentWLItem) },
+            { label: "Open ticket", icon: "fa fa-external-link", command: () => this.openTicket(this.currentWLItem) },
             { label: "Copy worklog", icon: "fa fa-copy", command: () => this.copyWorklog() },
             this.mnuWL_Upload,
             { label: "Delete worklog", icon: "fa fa-times", command: () => this.deleteWorklog() }
@@ -377,6 +378,11 @@ class Calendar extends BaseGadget {
     hideWorklogDialog = () => this.setState({ showAddWorklogPopup: false })
     toggleSettingsDialog = () => this.setState({ showSettingsPopup: !this.state.showSettingsPopup })
 
+    openTicket(obj) {
+        const url = this.$userutils.getTicketUrl(obj.ticketNo);
+        window.open(url);
+    }
+
     showWorklogPopup(obj) {
         hideContextMenu();
         const newState = { showAddWorklogPopup: true };
@@ -476,7 +482,7 @@ class Calendar extends BaseGadget {
     }
 
     select({ start, end, allDay }) {
-        const isMonthMode = this.state.settings.viewMode === "dayGridMonth";
+        const isMonthMode = this.state.settings.viewMode === "dayGridMonth" && !this.isGadget;
 
         if (!isMonthMode && allDay) {// start.hasTime() ==> allDay
             return false;
