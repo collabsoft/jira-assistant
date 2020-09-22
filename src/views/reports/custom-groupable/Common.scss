@@ -1,0 +1,19 @@
+.query-editor-gadget {
+    height: auto !important;
+    max-height: 405px;
+}
+
+.query-editor {
+    .display-fields {
+        max-height: 260px;
+
+        table.scroll-table {
+            thead{
+                tr{
+                    th:nth-child(1) { cursor: pointer; width: 70px; }
+                    th:nth-child(4) { width: 50px; }
+                }
+            }
+        }
+    }
+}

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { inject } from '../../services/injector-service';
 import moment from 'moment';
 import GroupableGrid from '../../components/GroupableGrid/GroupableGrid';
-import { DateDisplay, ProjectDisplay, TicketDisplay, TimeSpentDisplay, UserDisplay } from '../../display-controls';
+import { DateDisplay, IssueDisplay, ItemDisplay, ProjectDisplay, TicketDisplay, TimeSpentDisplay, UserDisplay } from '../../display-controls';
 import './StatusWiseTimeSpent.scss';
 
 class StatusWiseTimeSpent extends PureComponent {
@@ -103,19 +103,19 @@ class StatusWiseTimeSpent extends PureComponent {
         const list = [
             { field: "key", displayText: "Ticket No", type: "string", viewComponent: TicketDisplay, props: { onAddWorklog } },
             { field: "summary", displayText: "Summary", type: "string" },
-            { field: "project", groupKey: "project.key", displayText: "Project", type: "string", viewComponent: ProjectDisplay },
-            { field: "issuetype.name", displayText: "Issue Type", type: "string" },
-            { field: "epic", displayText: "Epic", type: "string", viewComponent: TicketDisplay, props: { onAddWorklog, hideWorklog: true } },
+            { field: "project", fieldKey: "project.key", displayText: "Project", type: "string", viewComponent: ProjectDisplay },
+            { field: "issuetype", fieldKey: "issuetype.name", displayText: "Issue Type", type: "string", viewComponent: ItemDisplay },
+            { field: "epic", displayText: "Epic", type: "string", viewComponent: TicketDisplay, props: { hideWorklog: true } },
             { field: "storyPoint", displayText: "Story Points", type: "number" },
             { field: "timeestimate", displayText: "Time Estimate", type: "number", viewComponent: TimeSpentDisplay },
             { field: "aggregatetimeestimate", displayText: "Σ Time Estimate", type: "number", viewComponent: TimeSpentDisplay },
             { field: "timeoriginalestimate", displayText: "Original Estimate", type: "number", viewComponent: TimeSpentDisplay },
             { field: "aggregatetimeoriginalestimate", displayText: "Σ Original Estimate", type: "number", viewComponent: TimeSpentDisplay },
-            { field: "parent.key", displayText: "Parent", type: "string", viewComponent: TicketDisplay, props: { onAddWorklog } },
-            { field: "status.name", displayText: "Status", type: "string" },
+            { field: "parent", fieldKey: "project.key", displayText: "Parent", type: "string", viewComponent: IssueDisplay, props: { onAddWorklog } },
+            { field: "status", fieldKey: "status.name", displayText: "Status", type: "string", viewComponent: ItemDisplay },
             { field: "created", displayText: "Created", type: "datetime", viewComponent: DateDisplay },
-            { field: "assignee", groupKey: "assignee.displayName", displayText: "Assignee", type: "string", viewComponent: UserDisplay },
-            { field: "reporter", groupKey: "reporter.displayName", displayText: "Reporter", type: "string", viewComponent: UserDisplay },
+            { field: "assignee", fieldKey: "assignee.displayName", displayText: "Assignee", type: "string", viewComponent: UserDisplay },
+            { field: "reporter", fieldKey: "reporter.displayName", displayText: "Reporter", type: "string", viewComponent: UserDisplay },
             ...statusList.map(status => ({
                 field: `statusData.${status.name}`, displayText: `Spent on ${status.name}`,
                 type: "number", viewComponent: TimeSpentDisplay, props: { inputType: "ticks", days: true }
