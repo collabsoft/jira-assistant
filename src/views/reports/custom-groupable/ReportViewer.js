@@ -11,15 +11,25 @@ class ReportViewer extends BaseGadget {
         super(props, query?.queryName || 'Custom report viewer', 'fa-clock-o');
         inject(this, 'AnalyticsService', 'ReportService', 'JiraService', 'UtilsService', 'UserUtilsService');
         this.state.isLoading = true;
-        this.initWithProps(props);
+        this.state.hideGroups = this.isGadget;
+    }
+
+    componentDidMount() {
+        this.initWithProps(this.props);
     }
 
     renderCustomActions(isGadget) {
-        if (!isGadget) {
+        if (isGadget) {
+            return (<Button type="success" title="Click to toggle group options"
+                icon={this.state.hideGroups ? 'fa fa-toggle-off' : 'fa fa-toggle-on'}
+                onClick={this.toggleGroupOptions} />);
+        } else {
             return (<Button type="success" label="Edit" title="Click to edit the report"
                 icon="fa fa-edit" onClick={this.props.onEditClicked} />);
         }
     }
+
+    toggleGroupOptions = () => this.setState({ hideGroups: !this.state.hideGroups })
 
     UNSAFE_componentWillReceiveProps(props) {
         super.UNSAFE_componentWillReceiveProps(props);
@@ -62,8 +72,12 @@ class ReportViewer extends BaseGadget {
 
     refreshData = () => this.loadData(this.props.query || this.state.query);
     loadData = async (query) => {
-        this.setState({ isLoading: true });
-        this.setState(await loadReportData(query));
+        this.setState({ isLoading: true, hasError: false });
+        try {
+            this.setState(await loadReportData(query));
+        } catch (err) {
+            this.setState({ isLoading: false, hasError: true });
+        }
     }
 
     tableSettingsChanged = (settings) => {
@@ -88,7 +102,9 @@ class ReportViewer extends BaseGadget {
             loading,
             reportData,
             columnList,
-            settings
+            settings,
+            hasError,
+            hideGroups
         } = this.state;
 
         const {
@@ -99,12 +115,17 @@ class ReportViewer extends BaseGadget {
             isDesc
         } = this.settings || settings || {};
 
+        if (hasError) {
+            return super.renderBase(<div className="error-block">Unable to load this report due to an error.</div>);
+        }
+
         if (loading || !reportData) {
             return super.renderBase();
         }
 
         return super.renderBase(
             <GroupableGrid dataset={reportData}
+                hideGroups={hideGroups}
                 exportSheetName={query.queryName}
                 columns={columnList} allowSorting={true}
                 onChange={this.tableSettingsChanged}
