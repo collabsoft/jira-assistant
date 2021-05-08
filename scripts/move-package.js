@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-function movePackages(buildPath, printLogs) {
+function movePackages(buildPath, sourceMapPath, printLogs) {
     const deleteFileTypes = /([.]txt|[.]svg)$/;
     const browsersList = ["chrome", "edge", "firefox", "firefox_selfhost", "opera"];
     const excludedFolders = ["source_map"];
@@ -23,7 +23,11 @@ function movePackages(buildPath, printLogs) {
 
     // Move all the sourcemap files to different folder
     const sourcemapFileTypes = /[.]map$/;
-    const sourceMapPath = `${buildPath}/source_map/`;
+
+    if (!sourceMapPath.endsWith('/')) {
+        sourceMapPath = `${sourceMapPath}/`;
+    }
+
     if (!fs.existsSync(sourceMapPath)) {
         fs.mkdirSync(sourceMapPath);
     }
