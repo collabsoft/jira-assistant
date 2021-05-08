@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Sortable } from 'jsd-report';
+import Sortable from '../../../drag-drop/Sortable';
 import { ScrollableTable, THead } from '../../../components/ScrollableTable';
 import CustomFieldSelector from '../../../jira-controls/CustomFieldSelector';
 import { getField } from './Utils';
@@ -17,6 +17,18 @@ class DisplayFields extends PureComponent {
     removeField = (index) => {
         const { fields, onChange } = this.props;
         onChange(fields.filter((_, i) => i !== index));
+    }
+
+    headerChanged = (val, index) => {
+        let { fields } = this.props;
+        fields = [...fields];
+
+        let field = fields[index];
+        field = { ...field };
+        fields[index] = field;
+
+        field.header = val;
+        this.props.onChange(fields);
     }
 
     editExpression = (index) => {
@@ -56,13 +68,15 @@ class DisplayFields extends PureComponent {
             });
     }
 
-    getControls = (f, i, hndl, drag) => {
+    getControls = (f, i, drag, hndl) => {
         return (<DisplayField key={i}
             dragHandle={drag.dragHandle}
             dropConnector={hndl.dropConnector}
             field={f} index={i}
             onRemove={this.removeField}
-            editExpression={this.editExpression} />);
+            editExpression={this.editExpression}
+            updateHeader={this.headerChanged}
+        />);
     }
 
     render() {
@@ -73,27 +87,26 @@ class DisplayFields extends PureComponent {
                 <THead>
                     <tr>
                         <th>#</th>
-                        <th>Display Column</th>
+                        <th>Jira Field</th>
+                        <th>Header Text</th>
                         <th>Type</th>
                         <th>Use Expr.</th>
                         <th>Remove</th>
                     </tr>
                 </THead>
-                <Sortable items={fields} itemType="field" itemTarget="field"
-                    onChange={onChange}
-                    useDragHandle={true}
-                    useCustomContainer={true}>
-                    {(renderItems, dropProps) => (
-                        <tbody>
-                            {renderItems(this.getControls)}
-                        </tbody>
-                    )}
-                </Sortable>
+                <tbody>
+                    <Sortable
+                        items={fields}
+                        itemType="field"
+                        accepts={["field"]}
+                        onChange={onChange}
+                        itemTemplate={this.getControls} />
+                </tbody>
                 <tfoot>
                     <tr>
                         <td className="data-center">{fields.length + 1}</td>
                         <td><CustomFieldSelector onChange={this.fieldAdded} /></td>
-                        <td colSpan="3">Note: Select the column from the list to add it as output</td>
+                        <td colSpan="4">Note: Select the column from the list to add it as output</td>
                     </tr>
                 </tfoot>
             </ScrollableTable>
@@ -102,19 +115,42 @@ class DisplayFields extends PureComponent {
 }
 
 class DisplayField extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = { header: props.field.header };
+    }
+
+    UNSAFE_componentWillReceiveProps(props) {
+        this.setState({ header: props.field.header });
+    }
+
     remove = () => this.props.onRemove(this.props.index);
     editExpression = () => this.props.editExpression(this.props.index);
+    updateHeader = () => {
+        let { header } = this.state;
+        header = header?.trim() || undefined;
+
+        this.props.updateHeader(header, this.props.index);
+    }
+
+    headerChanged = (header) => this.setState({ header });
 
     render() {
         const {
             dragHandle, dropConnector,
-            index, field, field: { name, type, isArray, knownObj, expr }
+            index, field, field: { name, field: fieldProp, type, isArray, knownObj, expr }
         } = this.props;
+        const { header } = this.state;
 
         return dropConnector(
             <tr>
                 <td className="data-center" ref={dragHandle}>{index + 1}</td>
-                <td>{name}</td>
+                <td>{name} ({fieldProp})</td>
+                <td><TextBox
+                    value={header}
+                    placeholder={name}
+                    onChange={this.headerChanged}
+                    onBlur={this.updateHeader} /></td>
                 {(knownObj || type) && <td>{type} {!!isArray && "(multiple)"}</td>}
                 {!knownObj && !type && <td>{JSON.stringify(field)}</td>}
                 <td className="data-center">
