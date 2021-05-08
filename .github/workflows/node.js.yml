@@ -25,15 +25,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
     - run: npm run build
-    
-    - name: Compress package
-      uses: papeloto/action-zip@v1
-      with:
-        files: build/
-        dest: package.zip
-        
-    - name: Retain Package
+    - name: Extract version
+      id: extract_version
+      uses: Saionaro/extract-package-version@v1.0.6
+      
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: package
-        path: package.zip
+        name: Package_${{ steps.extract_version.outputs.version }}
+        path: build/
