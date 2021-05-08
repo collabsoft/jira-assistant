@@ -29,8 +29,14 @@ jobs:
       id: extract_version
       uses: Saionaro/extract-package-version@v1.0.6
       
-    - name: Upload Artifacts
+    - name: Save build package
       uses: actions/upload-artifact@v2
       with:
-        name: Package_${{ steps.extract_version.outputs.version }}
+        name: JA_Build_${{ steps.extract_version.outputs.version }}
         path: build/
+        
+    - name: Save Sourcemap files
+      uses: actions/upload-artifact@v2
+      with:
+        name: JA_Sourcemap_${{ steps.extract_version.outputs.version }}
+        path: source_map/
