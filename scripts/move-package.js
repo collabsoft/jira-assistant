@@ -30,6 +30,17 @@ function movePackages(buildPath, sourceMapPath, printLogs) {
 
     if (!fs.existsSync(sourceMapPath)) {
         fs.mkdirSync(sourceMapPath);
+    } else {
+        const oldSourcemapFiles = [];
+        getFiles(sourceMapPath, oldSourcemapFiles);
+        oldSourcemapFiles
+            .filter(f => f.endsWith('.map'))
+            .forEach(f => {
+                if (printLogs) {
+                    console.log(`Deleting old sourcemap file ${f}`);
+                }
+                fs.unlinkSync(f);
+            });
     }
 
     allFilesList
