@@ -52,7 +52,7 @@ The most popular issues and the one with proper description and scenarios are ad
 ## How safe is the data handled by JiraAssistant?
 Please read our [Privacy policy](docs/PRIVACY_POLICY.md) to know about it.
 
-## Licence Aggrement
+## Licence Agreement
 Jira Assistant is a free software and anyone is free to use it for personal or commercial purpose. But you are authorized only to use this software. Any kind of changes or distribution of this software is not allowed. This software is provided as is without any warrenty and developer of this software is not responsible for any kind of loss incurred while using or mis-using this software.
 
 ## Shared Reports
