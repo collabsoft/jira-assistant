@@ -1,0 +1,51 @@
+{
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "manifest_version": 2,
+  "name": "A Jira Assistant Update",
+  "short_name": "Jira Assist",
+  "version": "0.1.0",
+  "description": "Help to track & upload work done on a Jira Ticket on timely basis and generate report.",
+  "icons": {
+    "24": "/assets/icon_24.png",
+    "32": "/assets/icon_32.png",
+    "48": "/assets/icon_48.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "24": "/assets/icon_24.png",
+      "32": "/assets/icon_32.png",
+      "48": "/assets/icon_48.png"
+    },
+    "default_title": "Jira Assistant",
+    "default_popup": "/menu.html"
+  },
+  "commands": {
+    "open-ja-dashboard": {
+      "suggested_key": {
+        "default": "Alt+J",
+        "mac": "Command+Shift+J"
+      },
+      "description": "Open JiraAssist dashboard page"
+    }
+  },
+  "oauth2": {
+    "client_id": "?",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar.readonly"
+    ]
+  },
+  "content_security_policy": "script-src 'self' ; object-src 'self';",
+  "offline_enabled": true,
+  "permissions": [
+    "storage"
+  ],
+  "optional_permissions": [
+    "unlimitedStorage",
+    "identity",
+    "tabs",
+    "http://*/",
+    "https://*/"
+  ],
+  "author": "DaBish - new",
+  "key": "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCkAdAkSkGrv613UEC8FjdK/ccwf7MfI//RZTy/fVd3JFyzBn3ZHOMksy2afXLdch2P+yePrst/yHBQxK2n+9Xb+jrkFUHkiGJ69yzCKEDKPZHt8KzfnY/dKnLpLQMudoR53Z9Ug57fk1X2OT0qm6XXhMeatsbh19ziNUJ3Y9GSl1PyXGZnh+G80LEjiPFwRfMFSncnBlsWO0viGZib8ebZoAp7R6DHiyMhFEP3IoDUYphM5OYrSSkXjEzQ+P9nMGNaniUXzVEcdif8KQLrW5W2QadiAdp3BGfKMx9gg3Z7NNqTUOV5GWS9cofEvDy8n1Id0p7z9Ssh5uflA78F/b2fAgMBAAECggEAG+WRDXMyC3A9pdNZR4Tx38gd9xJpmezqKShytlGwLHxbZjo+8sy2mDoAEkyvWpp8C88ZMhf11mT2Mc7aiP3NqS69kKlK/X/zXF4p11a4eo4RgesTxK+M1n5PcHkvFtqi+wWnAd2nivkJQKoIzPQPuAKGXzsixiyNDk8n4J3yemAMEqJh6vZsYIQGSN7NwIkWPh18//ZKvA6KdEPysRx4vu1KInid2igyyn+Y0vyCSrSBVVt136cQev4dp8arudBA2nqAw0yh/Q1wYzPXdvz2cajzSv37CE+iY6Hlzx5PGn9EQCbjLNN75v45MvJjhLP/kU04feoVMQhVbDpZqqUYaQKBgQDkRiT6Bjk3NlOH2YXgQli/ADY2dXEkFXerGvwRG12zhqeYNHj5ikL0GqXs5t1rPjoQMSbkznCB9QINNxRfOjRX5OKd8FCHayaa52R4cx0tjUTOovlqflPQJlg0xiyiRuUDW30S6dxARvP4wl8cJr/tmUBy/VWR6Vf9rfGSSIfnyQKBgQC37WFPWD1meHiebGZUYMkqQVJqbu6uYJ/WUCvlDziQEdpfYc7dMFoEXQ6I+cG4Jj58MVtX4UNAm3hsoziEGgQf4bpOJhDndlPNC9olnLyK5DvIYpfoy0L6D59QCboodINPgm/WeFnMGEo3q5PsDSa/4FrJD/mPhvKvu96/XtD+JwKBgD2OsN//l6RM8R+cSB7epWH0Y6ox523MoDWzFDBkydLkyAMie1EHuOBs4zvMUf9ei3fcWVmwVeSltoTryoGXh5AAOCBRMtYhzgpNxek5Wa/z/Y8fodTW9jEWdgjdPCISriVGoabdC7kFqTr254EG7hDbl+aqbE3puAG/y3ogNw4JAoGBAKrhSH9HJASH+Mh3Pbs3EK7JcaCg3+/ypY2ffqiZs5tmetQTMvYdbgSP0GlCYdCM95C66nqDNtBXoVKNcnyJDzvvo//nLd1d+g2O7WX0cNc5pLFPqIMIFXnt+b2KzAG5/iVosi84MXWFO67tIck1jsLF1pLm3J2UavUKPrDdjp4RAoGAI3ynLCAoCxR49gOIfnjgOOdenccBgQOVfZP/BgyXbOzVxFlVMJbTVWMUdtIu9L9Zdbh1R5A9G+FpIeui6fZcI4wwT9OgUtO1hjLHtNO79OIqg1OIedfAHWrBx8n4zAQsnfQCmGPRWkwh6UGWBnR1DMyuMfEnCJjiszfRZsqRmVo="
+}
