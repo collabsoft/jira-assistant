@@ -1,0 +1,1 @@
+div.daysinweek>div.day{width:35px;height:35px;border-radius:8px;display:inline-block;border:1px solid #acbfcd;cursor:pointer;background-color:#ecf2f9;text-align:center;margin-left:4px;padding-top:5px;font-weight:700}div.daysinweek>div.day.day-on,div.daysinweek>div.day:hover{color:#fff!important}
